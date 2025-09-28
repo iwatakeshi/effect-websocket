@@ -1,7 +1,7 @@
 {
   "name": "effect-websocket-bun",
   "version": "1.0.0",
-  "description": "WebSocket library for Effect-TS - Bun platform implementation",
+  "description": "Bun WebSocket server implementation for Effect-TS using Bun's native WebSocket API, providing fast and efficient WebSocket servers with Effect's functional programming model",
   "main": "src/index.ts",
   "module": "src/index.ts",
   "type": "module",
@@ -12,9 +12,33 @@
       "import": "./src/index.ts"
     }
   },
-  "keywords": ["websocket", "effect", "effect-ts", "bun", "streaming", "real-time"],
+  "keywords": [
+    "websocket",
+    "effect",
+    "effect-ts",
+    "bun",
+    "server",
+    "streaming",
+    "real-time",
+    "native",
+    "fast",
+    "functional-programming",
+    "high-performance"
+  ],
+  "homepage": "https://github.com/iwatakeshi/effect-websocket#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwatakeshi/effect-websocket.git",
+    "directory": "packages/bun"
+  },
+  "bugs": {
+    "url": "https://github.com/iwatakeshi/effect-websocket/issues"
+  },
   "author": "Takeshi Iwana",
   "license": "MIT",
+  "engines": {
+    "bun": ">=1.0.0"
+  },
   "peerDependencies": {
     "effect-websocket": "^1.0.0",
     "@effect/platform": "^0.91.1",

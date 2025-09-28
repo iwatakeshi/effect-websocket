@@ -14,36 +14,116 @@ export class WebSocketSendError extends Data.TaggedError("WebSocketSendError")<{
   readonly reason: string
 }> {}
 
-// WebSocket Message types
+/**
+ * Supported WebSocket message types.
+ * Can be a string, binary ArrayBuffer, or Blob.
+ */
 export type WebSocketMessage = string | ArrayBuffer | Blob
 
-// Reconnection options
+/**
+ * Configuration options for automatic reconnection behavior.
+ */
 export interface ReconnectionOptions {
+  /** Whether automatic reconnection is enabled */
   readonly enabled: boolean
-  readonly initialDelay: number // milliseconds
-  readonly maxDelay: number // milliseconds
-  readonly maxAttempts: number // 0 = unlimited
+  /** Initial delay before first reconnection attempt (milliseconds) */
+  readonly initialDelay: number
+  /** Maximum delay between reconnection attempts (milliseconds) */
+  readonly maxDelay: number
+  /** Maximum number of reconnection attempts (0 = unlimited) */
+  readonly maxAttempts: number
+  /** Multiplier for exponential backoff */
   readonly backoffMultiplier: number
+  /** Whether to add random jitter to delay */
   readonly jitter: boolean
 }
 
-// WebSocket Event types
+/**
+ * Events emitted by the WebSocket client during its lifecycle.
+ */
 export interface WebSocketEvent {
+  /** The type of event */
   readonly _tag: "open" | "close" | "error" | "message" | "reconnecting" | "reconnect_failed"
+  /** Message data (for message events) */
   readonly data?: WebSocketMessage
+  /** Close code (for close events) */
   readonly code?: number
+  /** Close reason (for close events) */
   readonly reason?: string
+  /** Reconnection attempt number (for reconnection events) */
   readonly attempt?: number
 }
 
-// WebSocket Client interface
+/**
+ * WebSocket client interface for Effect-TS.
+ * Provides methods for connecting to WebSocket servers, sending/receiving messages,
+ * and handling connection lifecycle with automatic reconnection support.
+ *
+ * @example
+ * ```typescript
+ * import { WebSocketClient } from "effect-websocket"
+ * import { Effect, Stream } from "effect"
+ *
+ * const program = WebSocketClient.withClient("ws://localhost:8080", (client) =>
+ *   Effect.gen(function* () {
+ *     // Send a message
+ *     yield* client.send("Hello!")
+ *
+ *     // Listen for messages
+ *     yield* Stream.runForEach(client.messages, (message) => {
+ *       console.log("Received:", message)
+ *       return Effect.succeed(undefined)
+ *     })
+ *
+ *     // Listen for connection events
+ *     yield* Stream.runForEach(client.events, (event) => {
+ *       console.log("Event:", event._tag)
+ *       return Effect.succeed(undefined)
+ *     })
+ *   })
+ * )
+ * ```
+ */
 export interface WebSocketClient {
+  /**
+   * Sends a message to the WebSocket server.
+   * @param message - The message to send
+   * @returns An Effect that succeeds when sent or fails with WebSocketSendError
+   */
   readonly send: (message: WebSocketMessage) => Effect.Effect<void, WebSocketSendError>
+
+  /**
+   * Stream of messages received from the server.
+   */
   readonly messages: Stream.Stream<WebSocketMessage, WebSocketError>
+
+  /**
+   * Stream of connection lifecycle events.
+   */
   readonly events: Stream.Stream<WebSocketEvent, WebSocketError>
+
+  /**
+   * Closes the WebSocket connection.
+   * @param code - Optional close code
+   * @param reason - Optional close reason
+   * @returns An Effect that succeeds when closed or fails with WebSocketError
+   */
   readonly close: (code?: number, reason?: string) => Effect.Effect<void, WebSocketError>
+
+  /**
+   * Gets the current WebSocket ready state.
+   * @returns 0 = CONNECTING, 1 = OPEN, 2 = CLOSING, 3 = CLOSED
+   */
   readonly readyState: Effect.Effect<number, never>
+
+  /**
+   * Checks if the client is currently attempting to reconnect.
+   */
   readonly isReconnecting: Effect.Effect<boolean, never>
+
+  /**
+   * Gets the number of reconnection attempts made.
+   */
   readonly reconnectAttempts: Effect.Effect<number, never>
 }
 

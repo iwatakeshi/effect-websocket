@@ -1,7 +1,7 @@
 {
   "name": "effect-websocket-node",
   "version": "1.0.0",
-  "description": "WebSocket library for Effect-TS - Node.js platform implementation",
+  "description": "Node.js WebSocket server implementation for Effect-TS using the 'ws' library, providing high-performance WebSocket servers with Effect's functional error handling",
   "main": "src/index.ts",
   "module": "src/index.ts",
   "type": "module",
@@ -12,9 +12,32 @@
       "import": "./src/index.ts"
     }
   },
-  "keywords": ["websocket", "effect", "effect-ts", "node", "streaming", "real-time"],
+  "keywords": [
+    "websocket",
+    "effect",
+    "effect-ts",
+    "node",
+    "server",
+    "streaming",
+    "real-time",
+    "ws",
+    "functional-programming",
+    "high-performance"
+  ],
+  "homepage": "https://github.com/iwatakeshi/effect-websocket#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwatakeshi/effect-websocket.git",
+    "directory": "packages/node"
+  },
+  "bugs": {
+    "url": "https://github.com/iwatakeshi/effect-websocket/issues"
+  },
   "author": "Takeshi Iwana",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "peerDependencies": {
     "effect-websocket": "^1.0.0",
     "@effect/platform": "^0.91.1",

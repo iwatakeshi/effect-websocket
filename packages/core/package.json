@@ -1,7 +1,7 @@
 {
   "name": "effect-websocket",
   "version": "1.0.0",
-  "description": "WebSocket library for Effect-TS - Core interfaces and types",
+  "description": "Runtime-agnostic WebSocket library for Effect-TS with client/server support, automatic reconnection, and cross-platform compatibility (Node.js, Bun, Browser)",
   "main": "src/index.ts",
   "module": "src/index.ts",
   "type": "module",
@@ -12,11 +12,39 @@
       "import": "./src/index.ts"
     }
   },
-  "keywords": ["websocket", "effect", "effect-ts", "streaming", "real-time", "interfaces", "types"],
+  "keywords": [
+    "websocket",
+    "effect",
+    "effect-ts",
+    "streaming",
+    "real-time",
+    "client",
+    "server",
+    "reconnection",
+    "cross-platform",
+    "monorepo",
+    "node",
+    "bun",
+    "browser",
+    "rpc",
+    "functional-programming"
+  ],
+  "homepage": "https://github.com/iwatakeshi/effect-websocket#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iwatakeshi/effect-websocket.git"
+  },
+  "bugs": {
+    "url": "https://github.com/iwatakeshi/effect-websocket/issues"
+  },
   "author": "Takeshi Iwana",
   "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "peerDependencies": {
     "effect": "^3.17.14",
+    "@effect/platform": "^0.91.1",
     "typescript": "^5"
   },
   "devDependencies": {

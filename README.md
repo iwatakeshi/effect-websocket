@@ -38,6 +38,15 @@ bun add effect-websocket effect-websocket-node @effect/platform effect
 bun add effect-websocket effect-websocket-bun @effect/platform effect
 ```
 
+## Documentation
+
+- **[API Reference](API.md)**: Comprehensive API documentation with examples
+- **Examples**: See the `packages/core/examples/` directory for complete working examples:
+  - `client.ts`: Basic client usage
+  - `server.ts`: Basic server usage
+  - `advanced-client.ts`: Client with reconnection and error handling
+  - `binary-data.ts`: Handling binary messages
+
 ## Usage
 
 ### Client
