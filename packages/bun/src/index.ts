@@ -71,33 +71,36 @@ export const makeWebSocketServer = (
     const messageQueue = yield* Queue.unbounded<ConnectionMessage>();
     const connectionMap = new Map<Bun.ServerWebSocket<any>, string>();
 
-    const server = Bun.serve({
-      port: options.port || 8080,
-      hostname: options.hostname || "localhost",
-      websocket: {
-        open(ws: Bun.ServerWebSocket<any>) {
-          const id = Math.random().toString(36).substring(7);
-          connectionMap.set(ws, id);
-          const connection = new BunWebSocketConnection(ws, id);
+    const server = yield* Effect.try({
+      try: () => Bun.serve({
+        port: options.port || 8080,
+        hostname: options.hostname || "localhost",
+        websocket: {
+          open(ws: Bun.ServerWebSocket<any>) {
+            const id = Math.random().toString(36).substring(7);
+            connectionMap.set(ws, id);
+            const connection = new BunWebSocketConnection(ws, id);
 
-          Queue.unsafeOffer(connectionQueue, connection);
-        },
-        message(ws: Bun.ServerWebSocket<any>, message: string | Buffer) {
-          const id = connectionMap.get(ws);
-          if (id) {
-            Queue.unsafeOffer(messageQueue, { connectionId: id, data: message });
+            Queue.unsafeOffer(connectionQueue, connection);
+          },
+          message(ws: Bun.ServerWebSocket<any>, message: string | Buffer) {
+            const id = connectionMap.get(ws);
+            if (id) {
+              Queue.unsafeOffer(messageQueue, { connectionId: id, data: message });
+            }
+          },
+          close(ws: Bun.ServerWebSocket<any>, code: number, reason: string) {
+            connectionMap.delete(ws);
           }
         },
-        close(ws: Bun.ServerWebSocket<any>, code: number, reason: string) {
-          connectionMap.delete(ws);
+        fetch(req, server) {
+          if (server.upgrade(req)) {
+            return new Response();
+          }
+          return new Response("WebSocket upgrade failed", { status: 400 });
         }
-      },
-      fetch(req, server) {
-        if (server.upgrade(req)) {
-          return new Response();
-        }
-        return new Response("WebSocket upgrade failed", { status: 400 });
-      }
+      }),
+      catch: (error) => new WebSocketServerError({ reason: (error as Error).message })
     });
 
     const wsServer = new BunWebSocketServer(server, connectionQueue, messageQueue);
@@ -111,3 +114,15 @@ export const makeWebSocketServer = (
   });
 
 export const BunWebSocketServerLive = makeWebSocketServer({ port: 8080 });
+
+// Helper to create and use a WebSocket server
+export const withWebSocketServer = <A, E>(
+  options: { port?: number; hostname?: string },
+  f: (server: WebSocketServer) => Effect.Effect<A, E, Scope.Scope>
+): Effect.Effect<A, E | WebSocketServerError, Scope.Scope> =>
+  Effect.scoped(
+    Effect.gen(function* () {
+      const server = yield* makeWebSocketServer(options)
+      return yield* f(server)
+    })
+  );
