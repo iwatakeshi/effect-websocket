@@ -1,0 +1,28 @@
+{
+  "name": "effect-websocket-bun",
+  "version": "1.0.0",
+  "description": "WebSocket library for Effect-TS - Bun platform implementation",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "type": "module",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    }
+  },
+  "keywords": ["websocket", "effect", "effect-ts", "bun", "streaming", "real-time"],
+  "author": "Takeshi Iwana",
+  "license": "MIT",
+  "peerDependencies": {
+    "effect-websocket": "^1.0.0",
+    "@effect/platform": "^0.91.1",
+    "effect": "^3.17.14",
+    "typescript": "^5"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}

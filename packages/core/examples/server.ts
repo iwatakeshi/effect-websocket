@@ -1,9 +1,13 @@
 import { Effect, Stream } from "effect"
-import { WebSocketServer } from "../src/index"
+import { withWebSocketServer } from "../../node/src/index"
 
 // Simple echo server
+// In a real application, you would import from the platform package:
+// For Node.js: import { withWebSocketServer } from "effect-websocket-node"
+// For Bun: import { withWebSocketServer } from "effect-websocket-bun"
+
 const program = Effect.scoped(
-  WebSocketServer.withServer(
+  withWebSocketServer(
     { port: 8080 },
     (server) => Effect.gen(function* () {
       console.log("WebSocket server started on port 8080")

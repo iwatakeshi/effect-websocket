@@ -1,6 +1,18 @@
 # Effect WebSocket Library
 
-A WebSocket library for Effect-TS that provides both client and server### WebSocketClient
+A WebSocket library for Effect-TS that provides both client and server functionality with runtime portability across Node.js, Bun, and browser environments.
+
+## Architecture
+
+This library follows Effect's ecosystem patterns with a mono-repo structure:
+
+- **`effect-websocket`** (core): Runtime-agnostic interfaces and types
+- **`effect-websocket-node`**: Node.js implementation using the `ws` package
+- **`effect-websocket-bun`**: Bun implementation using native WebSocket APIs
+
+## Features
+
+### WebSocketClient
 
 **Static Methods:**
 - `WebSocketClient.make(url, protocols?, reconnectionOptions?)`: Create a WebSocket client
@@ -19,7 +31,11 @@ A WebSocket library for Effect-TS that provides both client and server### WebSoc
 ## Installation
 
 ```bash
-bun add effect @effect/platform ws
+# For Node.js
+bun add effect-websocket effect-websocket-node @effect/platform effect
+
+# For Bun
+bun add effect-websocket effect-websocket-bun @effect/platform effect
 ```
 
 ## Usage
@@ -82,6 +98,36 @@ Effect.runPromise(program)
 ### Server
 
 ```typescript
+import { Effect, Stream } from "effect"
+import { WebSocketServer } from "effect-websocket"
+// Import platform-specific implementation
+import { makeWebSocketServer } from "effect-websocket-node" // or "effect-websocket-bun"
+
+const program = Effect.scoped(
+  makeWebSocketServer({ port: 8080 }, (server) =>
+    Effect.gen(function* () {
+      console.log("WebSocket server started on port 8080")
+
+      // Handle new connections
+      yield* Stream.runForEach(server.connections, (connection) => {
+        console.log("New connection:", connection.id)
+
+        // Handle messages from this connection
+        return Stream.runForEach(connection.messages, (message) => {
+          console.log(`Message from ${connection.id}:`, message)
+
+          // Echo the message back
+          return connection.send(`Echo: ${message}`)
+        })
+      })
+
+      yield* Effect.never
+    })
+  )
+)
+
+Effect.runPromise(program)
+```
 import { Effect, Stream } from "effect"
 import { WebSocketServer } from "effect-websocket"
 
@@ -148,32 +194,69 @@ interface ReconnectionOptions {
 - `messages`: Stream of messages from all connections (with connectionId)
 - `close()`: Close the server
 
-## Testing
+## Development
+
+### Testing
 
 ```bash
+# Run all tests
 bun run test
+
+# Run tests in CI mode (non-watch)
+bun run test:packages
+
+# Run specific test file
+bun run test packages/core/test/WebSocketClient.test.ts
 ```
 
-## Building
+### Building
 
 ```bash
-bun run build
+# Build all packages
+bun run build:packages
+
+# Clean build artifacts
+bun run clean
+```
+
+### Publishing
+
+Each package can be published independently:
+
+```bash
+# Publish core package
+cd packages/core && npm publish
+
+# Publish Node.js package
+cd packages/node && npm publish
+
+# Publish Bun package
+cd packages/bun && npm publish
 ```
 
 ## Examples
 
-See the `examples/` directory for complete client and server examples.ket
+See the `packages/core/examples/` directory for complete client and server examples.
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
+### Running Examples
 
 ```bash
-bun run index.ts
+# Client example (requires a running server)
+cd packages/core/examples && bun run client.ts
+
+# Server example
+cd packages/core/examples && bun run server.ts
 ```
 
-This project was created using `bun init` in bun v1.2.22. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## Contributing
+
+This is a mono-repo using workspaces. Make sure to:
+
+1. Run tests before committing: `bun run test:packages`
+2. Update examples if you change the API
+3. Test on both Node.js and Bun runtimes
+4. Follow Effect's coding patterns and error handling
+
+## License
+
+MIT

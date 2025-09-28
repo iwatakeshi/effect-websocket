@@ -2,6 +2,9 @@ import { Effect, Stream } from "effect"
 import { WebSocketClient } from "../src/index"
 
 // Simple client with reconnection
+// In a real application, you would import from "effect-websocket":
+// import { WebSocketClient } from "effect-websocket"
+
 const program = Effect.scoped(
   WebSocketClient.withClient(
     "ws://localhost:8080",
@@ -33,22 +36,21 @@ const program = Effect.scoped(
             console.log("Reconnection failed after", event.attempt, "attempts")
             break
           case "error":
-            console.log("Error occurred")
+            console.log("Error:", event)
             break
         }
         return Effect.succeed(undefined)
       })
 
-      // Keep running
       yield* Effect.never
     }),
     {
-      enabled: true,        // Enable automatic reconnection
-      initialDelay: 1000,   // Start with 1 second delay
-      maxDelay: 10000,      // Maximum delay of 10 seconds
-      maxAttempts: 5,       // Try up to 5 times
-      backoffMultiplier: 2, // Double the delay each attempt
-      jitter: true          // Add randomness to prevent thundering herd
+      enabled: true,
+      initialDelay: 1000,
+      maxDelay: 30000,
+      maxAttempts: 10,
+      backoffMultiplier: 2,
+      jitter: true
     }
   )
 )

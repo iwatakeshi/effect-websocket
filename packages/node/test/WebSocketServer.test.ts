@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { Effect, Stream, Chunk } from "effect"
-import { WebSocketServerError, makeWebSocketServer, withWebSocketServer } from "../src/WebSocketServer"
-import { WebSocket } from "ws"
+import { WebSocketServerError } from "../../core/src"
+import { makeWebSocketServer, withWebSocketServer } from "../src"
 
 describe("WebSocketServer", () => {
   let serverPort: number
