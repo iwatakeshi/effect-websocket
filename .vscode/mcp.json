@@ -1,0 +1,11 @@
+{
+    "servers": {
+        "mcp-effect": {
+            "command": "node",
+            "args": [
+                "~/.npm-global/lib/node_modules/@niklaserik/effect-mcp/dist/index.js"
+            ],
+            "env": {}
+        }
+    }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "effect-websocket",
+  "version": "1.0.0",
+  "description": "WebSocket library for Effect-TS with client and server support",
+  "module": "src/index.ts",
+  "type": "module",
+  "keywords": ["websocket", "effect", "effect-ts", "streaming", "real-time"],
+  "author": "Takeshi Iwana",
+  "license": "MIT",
+  "scripts": {
+    "test": "vitest",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/ws": "^8.5.13",
+    "vitest": "^2.1.8"
+  },
+  "peerDependencies": {
+    "@effect/platform": "^0.91.1",
+    "effect": "^3.17.14",
+    "typescript": "^5",
+    "ws": "^8.0.0"
+  },
+  "dependencies": {}
+}
