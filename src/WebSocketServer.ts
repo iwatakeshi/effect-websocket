@@ -144,3 +144,9 @@ export const withWebSocketServer = <A, E>(
       return yield* f(server)
     })
   )
+
+// Static API following Effect patterns
+export const WebSocketServer = {
+  make: makeWebSocketServer,
+  withWebSocketServer
+}

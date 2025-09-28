@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest"
 import { Effect, Stream, Chunk } from "effect"
-import { withWebSocketClient } from "../src/WebSocketClient"
-import { withWebSocketServer } from "../src/WebSocketServer"
+import { WebSocketClient } from "../src/WebSocketClient"
+import { WebSocketServer } from "../src/WebSocketServer"
 
 describe("WebSocket Integration", () => {
   let basePort: number
@@ -16,11 +16,11 @@ describe("WebSocket Integration", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketServer({ port }, (server) =>
+        WebSocketServer.withWebSocketServer({ port }, (server) =>
           Effect.gen(function* () {
             // Simple client connection
             const clientResult = yield* Effect.scoped(
-              withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
+              WebSocketClient.withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
                 Effect.gen(function* () {
                   // Just connect and close
                   yield* client.send("ping")
@@ -56,11 +56,11 @@ describe("WebSocket Integration", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketServer({ port }, (server) =>
+        WebSocketServer.withWebSocketServer({ port }, (server) =>
           Effect.gen(function* () {
             // Client sends message first
             yield* Effect.scoped(
-              withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
+              WebSocketClient.withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
                 Effect.gen(function* () {
                   yield* client.send(testMessage)
                   yield* Effect.sleep(200) // Give time for message to be processed
@@ -92,12 +92,12 @@ describe("WebSocket Integration", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketServer({ port }, (server) =>
+        WebSocketServer.withWebSocketServer({ port }, (server) =>
           Effect.gen(function* () {
             // Connect multiple clients first
             const clientEffects = Array.from({ length: numClients }, () =>
               Effect.scoped(
-                withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
+                WebSocketClient.withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
                   Effect.gen(function* () {
                     yield* client.send("hello")
                     yield* Effect.sleep(100)
@@ -132,11 +132,11 @@ describe("WebSocket Integration", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketServer({ port }, (server) =>
+        WebSocketServer.withWebSocketServer({ port }, (server) =>
           Effect.gen(function* () {
             // Client sends binary data first
             yield* Effect.scoped(
-              withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
+              WebSocketClient.withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
                 Effect.gen(function* () {
                   yield* client.send(binaryData.buffer)
                   yield* Effect.sleep(200)
@@ -173,11 +173,11 @@ describe("WebSocket Integration", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketServer({ port }, (server) =>
+        WebSocketServer.withWebSocketServer({ port }, (server) =>
           Effect.gen(function* () {
             // Client connects and disconnects first
             yield* Effect.scoped(
-              withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
+              WebSocketClient.withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
                 Effect.gen(function* () {
                   yield* client.send("hello")
                   yield* Effect.sleep(100)
@@ -210,11 +210,11 @@ describe("WebSocket Integration", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketServer({ port }, (server) =>
+        WebSocketServer.withWebSocketServer({ port }, (server) =>
           Effect.gen(function* () {
             // Client sends message
             yield* Effect.scoped(
-              withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
+              WebSocketClient.withWebSocketClient(`ws://localhost:${port}`, undefined, (client) =>
                 Effect.gen(function* () {
                   yield* client.send(clientMessage)
                   yield* Effect.sleep(200)

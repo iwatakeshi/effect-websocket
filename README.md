@@ -14,10 +14,10 @@ bun add effect @effect/platform ws
 
 ```typescript
 import { Effect, Stream } from "effect"
-import { withWebSocketClient } from "effect-websocket"
+import { WebSocketClient } from "effect-websocket"
 
 const program = Effect.scoped(
-  withWebSocketClient("ws://localhost:8080", undefined, (client) =>
+  WebSocketClient.withWebSocketClient("ws://localhost:8080", undefined, (client) =>
     Effect.gen(function* () {
       // Send a message
       yield* client.send("Hello!")
@@ -46,10 +46,10 @@ Effect.runPromise(program)
 
 ```typescript
 import { Effect, Stream } from "effect"
-import { withWebSocketServer } from "effect-websocket"
+import { WebSocketServer } from "effect-websocket"
 
 const program = Effect.scoped(
-  withWebSocketServer({ port: 8080 }, (server) =>
+  WebSocketServer.withWebSocketServer({ port: 8080 }, (server) =>
     Effect.gen(function* () {
       // Handle new connections
       yield* Stream.runForEach(server.connections, (connection) => {
@@ -75,6 +75,11 @@ Effect.runPromise(program)
 
 ### WebSocketClient
 
+**Static Methods:**
+- `WebSocketClient.make(url, protocols?)`: Create a WebSocket client
+- `WebSocketClient.withWebSocketClient(url, protocols?, f)`: Create and use a WebSocket client with automatic cleanup
+
+**Instance Methods:**
 - `send(message)`: Send a message
 - `messages`: Stream of incoming messages
 - `events`: Stream of WebSocket events (open, close, error, message)
@@ -83,6 +88,11 @@ Effect.runPromise(program)
 
 ### WebSocketServer
 
+**Static Methods:**
+- `WebSocketServer.make(options)`: Create a WebSocket server
+- `WebSocketServer.withWebSocketServer(options, f)`: Create and use a WebSocket server with automatic cleanup
+
+**Instance Methods:**
 - `connections`: Stream of new connections
 - `messages`: Stream of messages from all connections (with connectionId)
 - `close()`: Close the server

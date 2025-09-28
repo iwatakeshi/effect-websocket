@@ -1,9 +1,9 @@
 import { Effect, Stream } from "effect"
-import { withWebSocketClient } from "../src/index"
+import { WebSocketClient } from "../src/index"
 
 // Simple client
 const program = Effect.scoped(
-  withWebSocketClient(
+  WebSocketClient.withWebSocketClient(
     "ws://localhost:8080",
     undefined,
     (client) => Effect.gen(function* () {

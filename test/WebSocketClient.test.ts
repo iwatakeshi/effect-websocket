@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest"
 import { Effect } from "effect"
-import { WebSocketConnectionError, WebSocketError, WebSocketSendError, makeWebSocketClient, withWebSocketClient } from "../src/WebSocketClient"
+import { WebSocketConnectionError, WebSocketError, WebSocketSendError, WebSocketClient } from "../src/WebSocketClient"
 import { WebSocketServer } from "ws"
 
 describe("WebSocketClient", () => {
@@ -20,7 +20,7 @@ describe("WebSocketClient", () => {
 
   it("should fail to connect to invalid URL", async () => {
     const result = await Effect.runPromiseExit(
-      Effect.scoped(makeWebSocketClient("ws://127.0.0.1:99999"))
+      Effect.scoped(WebSocketClient.make("ws://127.0.0.1:99999"))
     )
 
     expect(result._tag).toBe("Failure")
@@ -47,7 +47,7 @@ describe("WebSocketClient", () => {
 
   it("should successfully connect to valid WebSocket server", async () => {
     const result = await Effect.runPromiseExit(
-      Effect.scoped(makeWebSocketClient(`ws://localhost:${testPort}`))
+      Effect.scoped(WebSocketClient.make(`ws://localhost:${testPort}`))
     )
 
     expect(result._tag).toBe("Success")
@@ -64,7 +64,7 @@ describe("WebSocketClient", () => {
   it("should send and receive string messages", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Send a message
             yield* client.send("Hello from test!")
@@ -86,7 +86,7 @@ describe("WebSocketClient", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Send binary data
             yield* client.send(binaryData)
@@ -104,7 +104,7 @@ describe("WebSocketClient", () => {
   it("should close connection properly", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Close with custom code and reason
             yield* client.close(1000, "Test close")
@@ -132,7 +132,7 @@ describe("WebSocketClient", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Send binary data as blob
             yield* client.send(blob)
@@ -150,7 +150,7 @@ describe("WebSocketClient", () => {
   it("should fail to send when connection is not open", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Close the connection first
             yield* client.close()
@@ -174,7 +174,7 @@ describe("WebSocketClient", () => {
   it("should report correct ready state", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             const state = yield* client.readyState
             return state
@@ -191,7 +191,7 @@ describe("WebSocketClient", () => {
 
   it("should handle connection errors", async () => {
     const result = await Effect.runPromiseExit(
-      Effect.scoped(makeWebSocketClient("ws://nonexistent.domain:1234"))
+      Effect.scoped(WebSocketClient.make("ws://nonexistent.domain:1234"))
     )
 
     expect(result._tag).toBe("Failure")
@@ -199,7 +199,7 @@ describe("WebSocketClient", () => {
 
   it("should support protocol negotiation", async () => {
     const result = await Effect.runPromiseExit(
-      Effect.scoped(makeWebSocketClient(`ws://localhost:${testPort}`, "test-protocol"))
+      Effect.scoped(WebSocketClient.make(`ws://localhost:${testPort}`, "test-protocol"))
     )
 
     expect(result._tag).toBe("Success")
@@ -207,7 +207,7 @@ describe("WebSocketClient", () => {
 
   it("should handle multiple protocols", async () => {
     const result = await Effect.runPromiseExit(
-      Effect.scoped(makeWebSocketClient(`ws://localhost:${testPort}`, ["proto1", "proto2"]))
+      Effect.scoped(WebSocketClient.make(`ws://localhost:${testPort}`, ["proto1", "proto2"]))
     )
 
     expect(result._tag).toBe("Success")
