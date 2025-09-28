@@ -28,15 +28,38 @@ const program = Effect.scoped(
         return Effect.succeed(undefined)
       })
 
-      // Listen for events
+      // Listen for events (including reconnection events)
       yield* Stream.runForEach(client.events, (event) => {
-        console.log("Event:", event._tag)
+        switch (event._tag) {
+          case "open":
+            console.log("Connected")
+            break
+          case "close":
+            console.log("Disconnected:", event.code, event.reason)
+            break
+          case "reconnecting":
+            console.log(`Reconnecting (attempt ${event.attempt})`)
+            break
+          case "reconnect_failed":
+            console.log("Reconnection failed after", event.attempt, "attempts")
+            break
+          case "error":
+            console.log("Error:", event)
+            break
+        }
         return Effect.succeed(undefined)
       })
 
       yield* Effect.never
     })
-  )
+  , {
+    enabled: true,        // Enable automatic reconnection
+    initialDelay: 1000,   // Start with 1 second delay
+    maxDelay: 30000,      // Maximum delay of 30 seconds
+    maxAttempts: 10,      // Try up to 10 times
+    backoffMultiplier: 2, // Double the delay each attempt
+    jitter: true          // Add randomness to prevent thundering herd
+  })
 )
 
 Effect.runPromise(program)
@@ -76,15 +99,29 @@ Effect.runPromise(program)
 ### WebSocketClient
 
 **Static Methods:**
-- `WebSocketClient.make(url, protocols?)`: Create a WebSocket client
-- `WebSocketClient.withClient(url, protocols?, f)`: Create and use a WebSocket client with automatic cleanup
+- `WebSocketClient.make(url, protocols?, reconnectionOptions?)`: Create a WebSocket client
+- `WebSocketClient.withClient(url, protocols?, f, reconnectionOptions?)`: Create and use a WebSocket client with automatic cleanup
 
 **Instance Methods:**
 - `send(message)`: Send a message
 - `messages`: Stream of incoming messages
-- `events`: Stream of WebSocket events (open, close, error, message)
+- `events`: Stream of WebSocket events (open, close, error, message, reconnecting, reconnect_failed)
 - `close()`: Close the connection
 - `readyState`: Current connection state
+- `isReconnecting`: Check if currently attempting reconnection
+- `reconnectAttempts`: Get number of reconnection attempts made
+
+**Reconnection Options:**
+```typescript
+interface ReconnectionOptions {
+  enabled: boolean           // Enable/disable automatic reconnection
+  initialDelay: number       // Initial delay in milliseconds (default: 1000)
+  maxDelay: number          // Maximum delay in milliseconds (default: 30000)
+  maxAttempts: number       // Maximum attempts (0 = unlimited, default: 10)
+  backoffMultiplier: number // Delay multiplier per attempt (default: 2)
+  jitter: boolean           // Add randomness to delay (default: true)
+}
+```
 
 ### WebSocketServer
 

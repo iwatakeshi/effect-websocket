@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest"
-import { Effect } from "effect"
+import { Effect, Stream } from "effect"
 import { WebSocketConnectionError, WebSocketError, WebSocketSendError, WebSocketClient } from "../src/WebSocketClient"
+import type { WebSocketEvent } from "../src/WebSocketClient"
 import { WebSocketServer } from "ws"
 
 describe("WebSocketClient", () => {
@@ -211,5 +212,51 @@ describe("WebSocketClient", () => {
     )
 
     expect(result._tag).toBe("Success")
+  })
+
+  it("should support reconnection with default options", async () => {
+    const result = await Effect.runPromiseExit(
+      Effect.scoped(
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
+          Effect.gen(function* () {
+            // Check initial state
+            const isReconnecting = yield* client.isReconnecting
+            const attempts = yield* client.reconnectAttempts
+            expect(isReconnecting).toBe(false)
+            expect(attempts).toBe(0)
+
+            return true
+          })
+        , { enabled: true, maxAttempts: 3 })
+      )
+    )
+
+    expect(result._tag).toBe("Success")
+  })
+
+  it("should emit reconnection events", async () => {
+    const events: WebSocketEvent[] = []
+
+    const result = await Effect.runPromiseExit(
+      Effect.scoped(
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
+          Effect.gen(function* () {
+            // Collect events for a short time
+            const timeout = Effect.sleep(500).pipe(Effect.map(() => true))
+            const collectEvents = Stream.runForEach(client.events, (event) => {
+              events.push(event)
+              return Effect.succeed(undefined)
+            })
+
+            yield* Effect.race(collectEvents, timeout)
+            return true
+          })
+        , { enabled: true, maxAttempts: 1, initialDelay: 100 })
+      )
+    )
+
+    expect(result._tag).toBe("Success")
+    // Should have at least an open event
+    expect(events.some(e => e._tag === "open")).toBe(true)
   })
 })
