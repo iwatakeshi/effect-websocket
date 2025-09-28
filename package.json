@@ -12,7 +12,7 @@
   "scripts": {
     "test": "vitest",
     "build": "tsc",
-    "test:packages": "vitest --config vitest.packages.config.ts --run && bun test packages/bun/test",
+    "test:packages": "vitest --config vitest.packages.config.ts --run && bun test packages/bun/test && bun test packages/core/test",
     "test:bun": "bun test packages/bun/test",
     "build:packages": "tsc --build packages/*/tsconfig.json",
     "clean": "rm -rf packages/*/dist"
