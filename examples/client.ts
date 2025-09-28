@@ -3,7 +3,7 @@ import { WebSocketClient } from "../src/index"
 
 // Simple client
 const program = Effect.scoped(
-  WebSocketClient.withWebSocketClient(
+  WebSocketClient.withClient(
     "ws://localhost:8080",
     undefined,
     (client) => Effect.gen(function* () {

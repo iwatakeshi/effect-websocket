@@ -17,7 +17,7 @@ import { Effect, Stream } from "effect"
 import { WebSocketClient } from "effect-websocket"
 
 const program = Effect.scoped(
-  WebSocketClient.withWebSocketClient("ws://localhost:8080", undefined, (client) =>
+  WebSocketClient.withClient("ws://localhost:8080", undefined, (client) =>
     Effect.gen(function* () {
       // Send a message
       yield* client.send("Hello!")
@@ -49,7 +49,7 @@ import { Effect, Stream } from "effect"
 import { WebSocketServer } from "effect-websocket"
 
 const program = Effect.scoped(
-  WebSocketServer.withWebSocketServer({ port: 8080 }, (server) =>
+  WebSocketServer.withServer({ port: 8080 }, (server) =>
     Effect.gen(function* () {
       // Handle new connections
       yield* Stream.runForEach(server.connections, (connection) => {
@@ -77,7 +77,7 @@ Effect.runPromise(program)
 
 **Static Methods:**
 - `WebSocketClient.make(url, protocols?)`: Create a WebSocket client
-- `WebSocketClient.withWebSocketClient(url, protocols?, f)`: Create and use a WebSocket client with automatic cleanup
+- `WebSocketClient.withClient(url, protocols?, f)`: Create and use a WebSocket client with automatic cleanup
 
 **Instance Methods:**
 - `send(message)`: Send a message
@@ -90,7 +90,7 @@ Effect.runPromise(program)
 
 **Static Methods:**
 - `WebSocketServer.make(options)`: Create a WebSocket server
-- `WebSocketServer.withWebSocketServer(options, f)`: Create and use a WebSocket server with automatic cleanup
+- `WebSocketServer.withServer(options, f)`: Create and use a WebSocket server with automatic cleanup
 
 **Instance Methods:**
 - `connections`: Stream of new connections

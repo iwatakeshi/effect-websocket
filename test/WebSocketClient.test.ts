@@ -64,7 +64,7 @@ describe("WebSocketClient", () => {
   it("should send and receive string messages", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Send a message
             yield* client.send("Hello from test!")
@@ -86,7 +86,7 @@ describe("WebSocketClient", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Send binary data
             yield* client.send(binaryData)
@@ -104,7 +104,7 @@ describe("WebSocketClient", () => {
   it("should close connection properly", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Close with custom code and reason
             yield* client.close(1000, "Test close")
@@ -132,7 +132,7 @@ describe("WebSocketClient", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Send binary data as blob
             yield* client.send(blob)
@@ -150,7 +150,7 @@ describe("WebSocketClient", () => {
   it("should fail to send when connection is not open", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             // Close the connection first
             yield* client.close()
@@ -174,7 +174,7 @@ describe("WebSocketClient", () => {
   it("should report correct ready state", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withWebSocketClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
           Effect.gen(function* () {
             const state = yield* client.readyState
             return state

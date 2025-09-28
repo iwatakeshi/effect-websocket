@@ -148,5 +148,5 @@ export const withWebSocketServer = <A, E>(
 // Static API following Effect patterns
 export const WebSocketServer = {
   make: makeWebSocketServer,
-  withWebSocketServer
+  withServer: withWebSocketServer
 }

@@ -178,5 +178,5 @@ export const withWebSocketClient = <A, E>(
 // Static API following Effect patterns
 export const WebSocketClient = {
   make: makeWebSocketClient,
-  withWebSocketClient
+  withClient: withWebSocketClient
 }
