@@ -1,7 +1,9 @@
 # Effect WebSocket Bun
 
+[![CI](https://github.com/iwatakeshi/effect-websocket/actions/workflows/ci.yml/badge.svg)](https://github.com/iwatakeshi/effect-websocket/actions/workflows/ci.yml)
 [![npm version](https://badge.fury.io/js/effect-websocket-bun.svg)](https://badge.fury.io/js/effect-websocket-bun)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Bun Version](https://img.shields.io/badge/bun-%3E%3D1.0.0-000000)](https://bun.sh/)
 
 Bun WebSocket server implementation for Effect-TS using Bun's native WebSocket API, providing fast and efficient WebSocket servers with Effect's functional programming model.
 

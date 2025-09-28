@@ -1,7 +1,10 @@
 # Effect WebSocket Core
 
+[![CI](https://github.com/iwatakeshi/effect-websocket/actions/workflows/ci.yml/badge.svg)](https://github.com/iwatakeshi/effect-websocket/actions/workflows/ci.yml)
 [![npm version](https://badge.fury.io/js/effect-websocket.svg)](https://badge.fury.io/js/effect-websocket)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
+[![Bun Version](https://img.shields.io/badge/bun-%3E%3D1.0.0-000000)](https://bun.sh/)
 
 Runtime-agnostic WebSocket library for Effect-TS with client/server support, automatic reconnection, and cross-platform compatibility (Node.js, Bun, Browser).
 
