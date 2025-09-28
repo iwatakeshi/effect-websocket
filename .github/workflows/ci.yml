@@ -36,8 +36,8 @@ jobs:
     - name: Build packages
       run: bun run build:packages
 
-    - name: Run tests
-      run: bun run test:packages
+    - name: Run unit tests
+      run: bun run test --run
 
   publish:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
@@ -65,8 +65,8 @@ jobs:
     - name: Build packages
       run: bun run build:packages
 
-    - name: Run tests
-      run: bun run test:packages
+    - name: Run unit tests
+      run: bun run test --run
 
     - name: Publish core package
       run: cd packages/core && npm publish
