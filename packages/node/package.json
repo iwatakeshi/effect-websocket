@@ -1,6 +1,6 @@
 {
   "name": "effect-websocket-node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Node.js WebSocket server implementation for Effect-TS using the 'ws' library, providing high-performance WebSocket servers with Effect's functional error handling",
   "main": "src/index.ts",
   "module": "src/index.ts",

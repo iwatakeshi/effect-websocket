@@ -1,6 +1,6 @@
 {
   "name": "effect-websocket",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Runtime-agnostic WebSocket library for Effect-TS with client/server support, automatic reconnection, and cross-platform compatibility (Node.js, Bun, Browser)",
   "main": "src/index.ts",
   "module": "src/index.ts",
