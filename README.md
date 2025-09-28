@@ -91,14 +91,7 @@ const program = Effect.scoped(
 
       yield* Effect.never
     })
-  , {
-    enabled: true,        // Enable automatic reconnection
-    initialDelay: 1000,   // Start with 1 second delay
-    maxDelay: 30000,      // Maximum delay of 30 seconds
-    maxAttempts: 10,      // Try up to 10 times
-    backoffMultiplier: 2, // Double the delay each attempt
-    jitter: true          // Add randomness to prevent thundering herd
-  })
+  )
 )
 
 Effect.runPromise(program)
@@ -128,31 +121,6 @@ const program = Effect.scoped(
           // Echo the message back
           return connection.send(`Echo: ${message}`)
         })
-      })
-
-      yield* Effect.never
-    })
-  )
-)
-
-Effect.runPromise(program)
-```
-import { Effect, Stream } from "effect"
-import { WebSocketServer } from "effect-websocket"
-
-const program = Effect.scoped(
-  WebSocketServer.withServer({ port: 8080 }, (server) =>
-    Effect.gen(function* () {
-      // Handle new connections
-      yield* Stream.runForEach(server.connections, (connection) => {
-        console.log(`New connection: ${connection.id}`)
-        return Effect.succeed(undefined)
-      })
-
-      // Handle messages from all connections
-      yield* Stream.runForEach(server.messages, (message) => {
-        console.log(`Message from ${message.connectionId}:`, message.data)
-        return Effect.succeed(undefined)
       })
 
       yield* Effect.never
