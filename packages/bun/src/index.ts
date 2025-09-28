@@ -1,4 +1,4 @@
-import { Effect, Layer, Stream, Queue, Scope } from "effect";
+import { Effect, Stream, Queue, Scope } from "effect";
 import type { WebSocketServer, WebSocketConnection, ConnectionMessage } from "../../core/src";
 import { WebSocketServerError } from "../../core/src";
 

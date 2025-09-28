@@ -1,8 +1,7 @@
 import { WebSocketServer as WSServer, WebSocket as WS } from "ws";
-import { Effect, Layer, Stream, Queue, Scope, Chunk } from "effect";
+import { Effect, Stream, Queue, Scope } from "effect";
 import type { WebSocketServer, WebSocketConnection, ConnectionMessage } from "../../core/src";
 import { WebSocketServerError } from "../../core/src";
-import { IncomingMessage } from "http";
 
 class NodeWebSocketConnection implements WebSocketConnection {
   constructor(

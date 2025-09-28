@@ -1,4 +1,4 @@
-import { Effect, Stream, Queue, Scope, Fiber, Option, Data } from "effect"
+import { Effect, Stream, Queue, Scope, Data } from "effect"
 
 // Errors
 export class WebSocketError extends Data.TaggedError("WebSocketError")<{
