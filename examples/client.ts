@@ -5,7 +5,6 @@ import { WebSocketClient } from "../src/index"
 const program = Effect.scoped(
   WebSocketClient.withClient(
     "ws://localhost:8080",
-    undefined,
     (client) => Effect.gen(function* () {
       console.log("Connected to WebSocket server")
 

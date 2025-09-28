@@ -217,7 +217,7 @@ describe("WebSocketClient", () => {
   it("should support reconnection with default options", async () => {
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, (client) =>
           Effect.gen(function* () {
             // Check initial state
             const isReconnecting = yield* client.isReconnecting
@@ -239,7 +239,7 @@ describe("WebSocketClient", () => {
 
     const result = await Effect.runPromiseExit(
       Effect.scoped(
-        WebSocketClient.withClient(`ws://localhost:${testPort}`, undefined, (client) =>
+        WebSocketClient.withClient(`ws://localhost:${testPort}`, (client) =>
           Effect.gen(function* () {
             // Collect events for a short time
             const timeout = Effect.sleep(500).pipe(Effect.map(() => true))

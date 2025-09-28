@@ -345,18 +345,48 @@ export const makeWebSocketClient = (
   })
 
 // Helper to create and use a WebSocket client
-export const withWebSocketClient = <A, E>(
+export function withWebSocketClient<A, E>(
+  url: string,
+  f: (client: WebSocketClient) => Effect.Effect<A, E, Scope.Scope>,
+  reconnectionOptions?: Partial<ReconnectionOptions>
+): Effect.Effect<A, E | WebSocketConnectionError, Scope.Scope>
+
+export function withWebSocketClient<A, E>(
   url: string,
   protocols: string | string[] | undefined,
   f: (client: WebSocketClient) => Effect.Effect<A, E, Scope.Scope>,
   reconnectionOptions?: Partial<ReconnectionOptions>
-): Effect.Effect<A, E | WebSocketConnectionError, Scope.Scope> =>
-  Effect.scoped(
-    Effect.gen(function* () {
-      const client = yield* makeWebSocketClient(url, protocols, reconnectionOptions)
-      return yield* f(client)
-    })
-  )
+): Effect.Effect<A, E | WebSocketConnectionError, Scope.Scope>
+
+export function withWebSocketClient<A, E>(
+  url: string,
+  protocolsOrCallback: string | string[] | undefined | ((client: WebSocketClient) => Effect.Effect<A, E, Scope.Scope>),
+  fOrReconnectionOptions?: ((client: WebSocketClient) => Effect.Effect<A, E, Scope.Scope>) | Partial<ReconnectionOptions>,
+  reconnectionOptions?: Partial<ReconnectionOptions>
+): Effect.Effect<A, E | WebSocketConnectionError, Scope.Scope> {
+  // Handle overloaded signatures
+  if (typeof protocolsOrCallback === 'function') {
+    // Called as: withWebSocketClient(url, f, reconnectionOptions?)
+    const f = protocolsOrCallback
+    const options = fOrReconnectionOptions as Partial<ReconnectionOptions> | undefined
+    return Effect.scoped(
+      Effect.gen(function* () {
+        const client = yield* makeWebSocketClient(url, undefined, options)
+        return yield* f(client)
+      })
+    )
+  } else {
+    // Called as: withWebSocketClient(url, protocols, f, reconnectionOptions?)
+    const protocols = protocolsOrCallback
+    const f = fOrReconnectionOptions as (client: WebSocketClient) => Effect.Effect<A, E, Scope.Scope>
+    return Effect.scoped(
+      Effect.gen(function* () {
+        const client = yield* makeWebSocketClient(url, protocols, reconnectionOptions)
+        return yield* f(client)
+      })
+    )
+  }
+}
 
 // Static API following Effect patterns
 export const WebSocketClient = {

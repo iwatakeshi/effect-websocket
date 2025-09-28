@@ -1,6 +1,20 @@
 # Effect WebSocket Library
 
-A WebSocket library for Effect-TS that provides both client and server functionality with proper error handling and streaming.
+A WebSocket library for Effect-TS that provides both client and server### WebSocketClient
+
+**Static Methods:**
+- `WebSocketClient.make(url, protocols?, reconnectionOptions?)`: Create a WebSocket client
+- `WebSocketClient.withClient(url, callback, reconnectionOptions?)`: Create and use a WebSocket client with automatic cleanup (when protocols not needed)
+- `WebSocketClient.withClient(url, protocols, callback, reconnectionOptions?)`: Create and use a WebSocket client with automatic cleanup (when protocols needed)
+
+**Instance Methods:**
+- `send(message)`: Send a message
+- `messages`: Stream of incoming messages
+- `events`: Stream of WebSocket events (open, close, error, message, reconnecting, reconnect_failed)
+- `close()`: Close the connection
+- `readyState`: Current connection state
+- `isReconnecting`: Check if currently attempting reconnection
+- `reconnectAttempts`: Get number of reconnection attempts made with proper error handling and streaming.
 
 ## Installation
 
@@ -17,7 +31,7 @@ import { Effect, Stream } from "effect"
 import { WebSocketClient } from "effect-websocket"
 
 const program = Effect.scoped(
-  WebSocketClient.withClient("ws://localhost:8080", undefined, (client) =>
+  WebSocketClient.withClient("ws://localhost:8080", (client) =>
     Effect.gen(function* () {
       // Send a message
       yield* client.send("Hello!")
